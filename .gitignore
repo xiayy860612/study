@@ -1,0 +1,11 @@
+# idea ignore
+.idea/
+*.iml
+
+# build output ignore
+target/
+
+# java ignore
+*.class
+
+
