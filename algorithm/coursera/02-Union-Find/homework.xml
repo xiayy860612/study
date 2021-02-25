@@ -1,0 +1,29 @@
+<!--
+  ~ ***************************************************************************
+  ~                             RoadDB Confidential
+  ~                         Copyright (c) RoadDB 2019
+  ~
+  ~         This software is furnished under license and may be used or
+  ~         copied only in accordance with the terms of such license.
+  ~ ***************************************************************************
+  ~ @file zip.xml
+  ~ @brief
+  ~ ***************************************************************************
+  -->
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <id>tgz</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <formats>
+        <format>zip</format>
+    </formats>
+    <files>
+        <file>
+            <source>src/main/homework/Percolation.java</source>
+        </file>
+        <file>
+            <source>src/main/homework/PercolationStats.java</source>
+        </file>
+    </files>
+</assembly>
