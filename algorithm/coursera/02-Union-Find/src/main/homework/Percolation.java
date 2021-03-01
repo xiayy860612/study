@@ -4,64 +4,79 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 /**
  * see @{link https://coursera.cs.princeton.edu/algs4/assignments/percolation/specification.php}
+ * WeightedQuickUnionUF size = n^2 * 2 * 4 + 4
+ * Percolation size = WeightedQuickUnionUF size + 4 + n^2 + 3 * 4;
+ *
  */
 public class Percolation {
     private final int n;
-    private final WeightedQuickUnionUF uf;
-    // 0 is blocked, 1 is open
-    private final int[] status;
+    private final WeightedQuickUnionUF vUf;
+    // true is open, or not
+    private final boolean[] status;
     private int openCount = 0;
+    private final int vh;
+    private final int vt;
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
-        if (n < 0) {
+        if (n <= 0) {
             throw new IllegalArgumentException("outside its prescribed range");
         }
         this.n = n;
-        this.uf = new WeightedQuickUnionUF(n*n);
-        this.status = new int[n*n];
+        this.vh = n * n;
+        this.vt = n * n + 1;
+        this.vUf = new WeightedQuickUnionUF(n * n + 2);
+        this.status = new boolean[n*n];
         for (int i = 0; i < this.status.length; ++i) {
-            this.status[i] = 0;
+            this.status[i] = false;
+            if (i < this.n) {
+                this.vUf.union(this.vh, i);
+            }
+
+            if (i > this.status.length - 1 - this.n) {
+                this.vUf.union(this.vt, i);
+            }
         }
     }
 
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
         int index = getIndex(row, col);
-        if (this.status[index] == 1) {
+        if (this.status[index]) {
             return;
         }
 
-        this.status[index] = 1;
+        this.status[index] = true;
         ++openCount;
+        // top
         if (row > 1) {
             int topIndex = index - this.n;
-            if (this.status[topIndex] == 1) {
-                this.uf.union(index, topIndex);
-            }
-        }
-
-        // bottom
-        if (row < this.n) {
-            int bottomIndex = index + this.n;
-            if (this.status[bottomIndex] == 1) {
-                this.uf.union(index, bottomIndex);
+            if (this.status[topIndex]) {
+                this.vUf.union(index, topIndex);
             }
         }
 
         // left
         if (col > 1) {
             int leftIndex = index - 1;
-            if (this.status[leftIndex] == 1) {
-                this.uf.union(index, leftIndex);
+            if (this.status[leftIndex]) {
+                this.vUf.union(index, leftIndex);
             }
         }
 
         // right
         if (col < this.n) {
             int rightIndex = index + 1;
-            if (this.status[rightIndex] == 1) {
-                this.uf.union(index, rightIndex);
+            if (this.status[rightIndex]) {
+                this.vUf.union(index, rightIndex);
+            }
+        }
+
+        // bottom
+        if (row < this.n) {
+            int bottomIndex = index + this.n;
+            if (this.status[bottomIndex]) {
+                this.vUf.union(index, bottomIndex);
             }
         }
     }
@@ -69,13 +84,20 @@ public class Percolation {
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
         int index = getIndex(row, col);
-        return this.status[index] == 1;
+        return this.status[index];
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
         int index = getIndex(row, col);
-        return isIndexFull(index);
+        if (!this.status[index]) {
+            return false;
+        }
+        if (index < this.n) {
+            return true;
+        }
+
+        return this.vUf.find(index) == this.vUf.find(this.vh);
     }
 
     // returns the number of open sites
@@ -85,17 +107,11 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        for (int i = 0; i < this.n; ++i) {
-            int index = this.status.length - 1 - i;
-            if (isIndexFull(index)) {
-                return true;
-            }
-        }
-        return false;
+        return this.vUf.find(this.vt) == this.vUf.find(this.vh);
     }
 
     private void validate(int row, int col) {
-        if (row < 1 || col < 1) {
+        if (row < 1 || row > this.n || col < 1 || col > this.n) {
             throw new IllegalArgumentException("outside its prescribed range");
         }
     }
@@ -103,27 +119,6 @@ public class Percolation {
     private int getIndex(int row, int col) {
         validate(row, col);
         return (row - 1) * this.n + (col - 1);
-    }
-
-    private boolean isIndexFull(int index) {
-        if (this.status[index] == 0) {
-            return false;
-        }
-        if (index < this.n) {
-            return true;
-        }
-
-        int root = this.uf.find(index);
-        for (int i = 0; i < this.n; ++i) {
-            if (this.status[i] == 0) {
-                continue;
-            }
-
-            if (this.uf.find(i) == root) {
-                return true;
-            }
-        }
-        return false;
     }
 
     // test client (optional)
@@ -136,7 +131,7 @@ public class Percolation {
             try {
                 percolation.open(row, col);
                 StdOut.println("Percolation: " + percolation.percolates());
-            } catch (Exception ex) {
+            } catch (IllegalArgumentException ex) {
                 StdOut.println(ex.getMessage());
             }
         }
