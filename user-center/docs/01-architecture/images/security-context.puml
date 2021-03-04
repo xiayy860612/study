@@ -1,0 +1,28 @@
+@startuml "SecurityContextPersistenceFilter"
+
+interface SecurityContext
+
+interface SecurityContextRepository
+class HttpSessionSecurityContextRepository implements SecurityContextRepository
+note left
+通过http session关联SecurityContext
+end note
+
+SecurityContextRepository *--> SecurityContext: 管理
+
+class SecurityContextHolder
+note "对当前请求的SecurityContext进行代理" as M1
+SecurityContextHolder -- M1
+M1 --> SecurityContext
+
+interface SecurityContextHolderStrategy
+note left
+SecurityContext的存储策略,
+默认为ThreadLocal
+end note
+class GlobalSecurityContextHolderStrategy implements SecurityContextHolderStrategy
+class InheritableThreadLocalSecurityContextHolderStrategy implements SecurityContextHolderStrategy
+class ThreadLocalSecurityContextHolderStrategy implements SecurityContextHolderStrategy
+SecurityContextHolder -- SecurityContextHolderStrategy
+
+@enduml
