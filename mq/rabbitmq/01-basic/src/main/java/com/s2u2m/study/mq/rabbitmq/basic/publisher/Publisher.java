@@ -62,6 +62,10 @@ public class Publisher {
 
         // re-send
         for (Msg msg : msgs) {
+            if (msg.sendAmount > 3) {
+                System.out.printf("Re-Send touch max time, [%s][%s]\n", msg.deliveryTag, msg.msg);
+                continue;
+            }
             System.out.printf("Re-Send [%s][%s]\n", msg.deliveryTag, msg.msg);
             sendMsg(msg);
         }
@@ -75,10 +79,15 @@ public class Publisher {
 
         channel.queueDeclare(
                 RabbitMqConfig.BASIC_DEMO_QUEUE,
-                true, false, true, null);
-
+                true, false, false, null);
         channel.queueBind(RabbitMqConfig.BASIC_DEMO_QUEUE, RabbitMqConfig.BASIC_DEMO_EX,
                 RabbitMqConfig.BASIC_DEMO_QUEUE);
+
+        channel.queueDeclare(
+                RabbitMqConfig.BASIC_DEMO_QUEUE_2,
+                true, false, false, null);
+        channel.queueBind(RabbitMqConfig.BASIC_DEMO_QUEUE_2, RabbitMqConfig.BASIC_DEMO_EX,
+                RabbitMqConfig.BASIC_DEMO_QUEUE_2);
     }
 
     private void declareAe(Channel channel) throws IOException {

@@ -11,6 +11,7 @@ public class RabbitMqConfig {
     public static final String BASIC_DEMO_EX = "basic-ex";
     public static final String BASIC_DEMO_AE = "basic-alternate-exchange";
     public static final String BASIC_DEMO_QUEUE = "basic-queue";
+    public static final String BASIC_DEMO_QUEUE_2 = "basic-queue-2";
 
 
 
