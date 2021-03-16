@@ -11,6 +11,7 @@
     <modules>
         <module>01-Intro</module>
         <module>02-Union-Find</module>
+        <module>03-Sort</module>
     </modules>
 
     <properties>
@@ -69,8 +70,6 @@
                 <version>3.8.0</version>
                 <configuration>
                     <release>${java.version}</release>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
                 </configuration>
             </plugin>
         </plugins>
