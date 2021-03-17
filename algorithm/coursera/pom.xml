@@ -12,6 +12,7 @@
         <module>01-Intro</module>
         <module>02-Union-Find</module>
         <module>03-Sort</module>
+        <module>03-LinkedListAndArray</module>
     </modules>
 
     <properties>
