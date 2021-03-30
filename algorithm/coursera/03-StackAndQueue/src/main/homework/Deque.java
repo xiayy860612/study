@@ -108,7 +108,7 @@ public class Deque<Item> implements Iterable<Item> {
      * 3 * 4 bytes = 12 bytes
      */
     private static class Node<Item> {
-        private Item item;
+        private final Item item;
         private Node<Item> prev = null;
         private Node<Item> next = null;
 
@@ -156,33 +156,24 @@ public class Deque<Item> implements Iterable<Item> {
             String input = StdIn.readString();
             switch (input) {
                 case "-rf":
-                {
                     StdOut.println(deque.removeFirst());
                     break;
-                }
                 case "-rl":
-                {
                     StdOut.println(deque.removeLast());
                     break;
-                }
                 case "-af":
-                {
                     isAddFirst = true;
                     break;
-                }
                 case "-al":
-                {
                     isAddFirst = false;
                     break;
-                }
                 default:
-                {
                     if (isAddFirst) {
                         deque.addFirst(input);
                     } else {
                         deque.addLast(input);
                     }
-                }
+                    break;
             }
         }
         StdOut.println();

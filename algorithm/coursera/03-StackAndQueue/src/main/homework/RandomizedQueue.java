@@ -9,8 +9,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     private int size = 0;
 
     // construct an empty randomized queue
-    public RandomizedQueue(int capacity) {
-        array = new Object[capacity];
+    public RandomizedQueue() {
+        array = new Object[1];
     }
 
     // is the randomized queue empty?
@@ -40,7 +40,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new NoSuchElementException();
         }
         int index = StdRandom.uniform(size);
-        Item item = (Item) array[index];
+        Item item = get(index);
         array[index] = array[--size];
         array[size] = null;
         if (size <= array.length / 4) {
@@ -55,17 +55,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new NoSuchElementException();
         }
         int index = StdRandom.uniform(size);
-        return (Item) array[index];
+        return get(index);
     }
 
     // return an independent iterator over items in random order
     public Iterator<Item> iterator() {
-        int[] order = new int[size];
-        for (int i = 0; i < size; ++i) {
-            order[i] = i;
-        }
-        StdRandom.shuffle(order);
-        return new RandomizedQueueIterator(array, order);
+        return new RandomizedQueueIterator<>(this);
     }
 
     private void resize(int capacity) {
@@ -76,14 +71,22 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         array = newArray;
     }
 
+    private Item get(int index) {
+        return (Item) array[index];
+    }
+
     private static class RandomizedQueueIterator<Item> implements Iterator<Item> {
-        private Object[] array;
-        private int[] order;
+        private final RandomizedQueue<Item> queue;
+        private final int[] order;
         private int index;
 
-        public RandomizedQueueIterator(Object[] array, int[] order) {
-            this.array = array;
-            this.order = order;
+        public RandomizedQueueIterator(RandomizedQueue<Item> queue) {
+            this.queue = queue;
+            this.order = new int[queue.size];
+            for (int i = 0; i < queue.size; ++i) {
+                order[i] = i;
+            }
+            StdRandom.shuffle(this.order);
             this.index = 0;
         }
 
@@ -97,7 +100,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            return (Item) array[this.order[index++]];
+            return queue.get(this.order[index++]);
         }
 
         @Override
@@ -108,7 +111,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // unit testing (required)
     public static void main(String[] args) {
-        RandomizedQueue<String> items = new RandomizedQueue<>(2);
+        RandomizedQueue<String> items = new RandomizedQueue<>();
         items.enqueue("hello");
         items.enqueue("world");
         items.enqueue("test");

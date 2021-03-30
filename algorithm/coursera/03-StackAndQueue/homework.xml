@@ -20,10 +20,13 @@
     </formats>
     <files>
         <file>
-            <source>src/main/homework/Percolation.java</source>
+            <source>src/main/homework/Deque.java</source>
         </file>
         <file>
-            <source>src/main/homework/PercolationStats.java</source>
+            <source>src/main/homework/RandomizedQueue.java</source>
+        </file>
+        <file>
+            <source>src/main/homework/Permutation.java</source>
         </file>
     </files>
 </assembly>
