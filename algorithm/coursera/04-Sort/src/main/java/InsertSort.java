@@ -2,9 +2,13 @@ public class InsertSort implements SortExample {
     @Override
     public void sort(Comparable[] a) {
         for (int i = 1; i < a.length; ++i) {
-            for (int j = i; j > 0 && less(a[j], a[j - 1]); --j) {
-                exch(a, j, j - 1);
+            Comparable obj = a[i];
+            int index = i;
+            while (index > 0 && less(obj, a[index-1])) {
+                a[index] = a[index-1];
+                --index;
             }
+            a[index] = obj;
         }
     }
 
