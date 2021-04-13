@@ -1,15 +1,19 @@
-public class SelectSort implements SortExample {
+package basic;
 
+public class ShellSort implements SortExample {
     @Override
     public void sort(Comparable[] a) {
-        for (int i = 0; i < a.length; ++i) {
-            int min = i;
-            for (int j = i + 1; j < a.length; ++j) {
-                if (less(a[j], a[min])) {
-                    min = j;
+        int h = 1;
+        while (h < a.length/3) {
+            h = 3 * h + 1;
+        }
+        while (h >= 1) {
+            for (int i = h; i < a.length; ++i) {
+                for (int j = i; j >= h && less(a[j], a[j - h]); j-=h) {
+                    exch(a, j, j - h);
                 }
             }
-            exch(a, i, min);
+            h = h/3;
         }
     }
 
@@ -20,7 +24,8 @@ public class SelectSort implements SortExample {
         for (char c : input.toCharArray()) {
             a[index++] = String.valueOf(c);
         }
-        SelectSort sort = new SelectSort();
+
+        ShellSort sort = new ShellSort();
         sort.sort(a);
         assert sort.isSorted(a);
         sort.show(a);

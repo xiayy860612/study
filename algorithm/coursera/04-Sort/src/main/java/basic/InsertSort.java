@@ -1,3 +1,5 @@
+package basic;
+
 public class InsertSort implements SortExample {
     @Override
     public void sort(Comparable[] a) {
